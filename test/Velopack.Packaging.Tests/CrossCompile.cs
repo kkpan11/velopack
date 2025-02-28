@@ -1,4 +1,5 @@
 ﻿using Velopack.Packaging.Unix;
+using Velopack.Util;
 
 namespace Velopack.Packaging.Tests;
 
@@ -20,7 +21,7 @@ public class CrossCompile
         var rid = RID.Parse(target);
 
         string id = $"from-{VelopackRuntimeInfo.SystemOs.GetOsShortName()}-targets-{rid.BaseRID.GetOsShortName()}";
-        using var _1 = Utility.GetTempDirectory(out var tempDir);
+        using var _1 = TempUtil.GetTempDirectory(out var tempDir);
         TestApp.PackTestApp(id, "1.0.0", id, tempDir, logger, targetRid: rid);
 
         var artifactsDir = PathHelper.GetTestRootPath("artifacts");
@@ -43,11 +44,12 @@ public class CrossCompile
     [InlineData("from-win-targets-linux")]
     [InlineData("from-linux-targets-linux")]
     [InlineData("from-osx-targets-linux")]
-    public void RunCrossAppLinux(string artifactId)
+    public async Task RunCrossAppLinux(string artifactId)
     {
         using var logger = _output.BuildLoggerFor<CrossCompile>();
-        Skip.If(String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("VELOPACK_CROSS_ARTIFACTS")),
-                "VELOPACK_CROSS_ARTIFACTS not set");
+        Skip.If(
+            String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("VELOPACK_CROSS_ARTIFACTS")),
+            "VELOPACK_CROSS_ARTIFACTS not set");
         Skip.IfNot(VelopackRuntimeInfo.IsLinux, "AppImage's can only run on Linux");
 
         var artifactsDir = PathHelper.GetTestRootPath("artifacts");
@@ -59,6 +61,19 @@ public class CrossCompile
         var output = Exe.InvokeAndThrowIfNonZero(artifactPath, new[] { "test" }, null);
         logger.LogInformation(output);
         Assert.EndsWith(artifactId, output.Trim());
+
+        // var appImageLintPath = PathHelper.GetTestRootPath("appimagelint.AppImage");
+        // if (!File.Exists(appImageLintPath)) {
+        //     var downloader = HttpUtil.CreateDefaultDownloader();
+        //     await downloader.DownloadFile(
+        //         "https://github.com/TheAssassin/appimagelint/releases/download/continuous/appimagelint-x86_64.AppImage",
+        //         appImageLintPath,
+        //         _ => { });
+        //     Chmod.ChmodFileAsExecutable(appImageLintPath);
+        // }
+        //
+        // var lintOutput = Exe.InvokeAndThrowIfNonZero(appImageLintPath, new[] { artifactPath }, null);
+        // logger.LogInformation(lintOutput);
     }
 
     [SkippableTheory]
@@ -68,7 +83,8 @@ public class CrossCompile
     public void RunCrossAppWindows(string artifactId)
     {
         using var logger = _output.BuildLoggerFor<CrossCompile>();
-        Skip.If(String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("VELOPACK_CROSS_ARTIFACTS")),
+        Skip.If(
+            String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("VELOPACK_CROSS_ARTIFACTS")),
             "VELOPACK_CROSS_ARTIFACTS not set");
         Skip.IfNot(VelopackRuntimeInfo.IsWindows, "PE files can only run on Windows");
 
@@ -82,9 +98,10 @@ public class CrossCompile
         var appExe = Path.Combine(appRoot, "current", "TestApp.exe");
         var appUpdate = Path.Combine(appRoot, "Update.exe");
 
-        Utility.DeleteFileOrDirectoryHard(appRoot);
+        IoUtil.DeleteFileOrDirectoryHard(appRoot);
 
         Assert.False(File.Exists(appExe));
+
         var installOutput = Exe.InvokeAndThrowIfNonZero(artifactPath, new[] { "--silent" }, null);
         logger.LogInformation(installOutput);
 
@@ -94,7 +111,11 @@ public class CrossCompile
         logger.LogInformation(output);
         Assert.EndsWith(artifactId, output.Trim());
 
-        Exe.RunHostedCommand($"\"{appUpdate}\" --uninstall --silent");
+        var uninstallOutput = Exe.RunHostedCommand($"\"{appUpdate}\" --uninstall --silent");
+        logger.LogInformation(uninstallOutput);
+
         Assert.False(File.Exists(appExe));
+        Assert.True(File.Exists(Path.Combine(appRoot, ".dead")));
+        IoUtil.DeleteFileOrDirectoryHard(appRoot);
     }
 }

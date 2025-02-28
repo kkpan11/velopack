@@ -6,11 +6,12 @@
 ---
 
 [![Nuget](https://img.shields.io/nuget/v/Velopack?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Velopack/)
-[![Nuget vPre](https://img.shields.io/nuget/vpre/Velopack?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Velopack/)
-[![Discord](https://img.shields.io/discord/767856501477343282?style=flat-square&color=purple&logo=discord&logoColor=white)](https://discord.gg/CjrCrNzd3F)
+[![Discord](https://img.shields.io/badge/chat-Discord-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/CjrCrNzd3F)
 [![Build](https://img.shields.io/github/actions/workflow/status/velopack/velopack/build.yml?branch=develop&style=flat-square&logo=github&logoColor=white)](https://github.com/velopack/velopack/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/velopack/velopack?style=flat-square&logo=codecov&logoColor=white)](https://app.codecov.io/gh/velopack/velopack)
 [![License](https://img.shields.io/github/license/velopack/velopack?style=flat-square)](https://github.com/velopack/velopack/blob/develop/LICENSE)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fvelopack%2Fvelopack&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=true)](https://hits.seeyoufarm.com)
+
 
 Velopack is an installation and auto-update framework for cross-platform applications. It's opinionated, extremely easy to use with zero config needed. With just one command you can be up and running with an installable application, and it's lightning fast for your users, too.
 
@@ -28,10 +29,11 @@ https://github.com/velopack/velopack/assets/1287295/0ff1bea7-15ed-42ae-8bdd-9519
 - 📖 [Read the docs](https://docs.velopack.io/)
 - ⚡ [Quick start guides](https://docs.velopack.io/category/quick-start)
 - 🕶️ [View example apps](https://docs.velopack.io/category/sample-apps)
+- 📺 [See website & demo](https://velopack.io/)
 
 ## Community
-- ❓ Ask questions, get support, or discuss ideas on [our Discord server](https://discord.gg/CjrCrNzd3F)
-- 🗣️ Report bugs on [GitHub Issues](https://github.com/velopack/velopack/issues)
+- ❓ Ask questions, get support, or discuss ideas on [Discord](https://discord.gg/CjrCrNzd3F)
+- 🗣️ Report bugs or request features on [GitHub Issues](https://github.com/velopack/velopack/issues)
 
 ## Contributing
 - 💬 Join us on [Discord](https://discord.gg/CjrCrNzd3F) to get involved in dev discussions
@@ -46,3 +48,6 @@ Just wanted to say a huge thank you. I've been using Clowd.Squirrel for a couple
 
 I've used a lot of installer frameworks and Velopack is by far the best. Everything is like magic: you run the installer, and then the app is just open, ready to use. Updates apply and relaunch in ~2 seconds with no UAC prompts. The installer creation process is painless and integrates easily with code signing, and the command-line tool makes it simple to upload your updater files. You don't need to futz with separate installer scripts in some weird language; you can build all those hooks into your main app! The support is also phenominal; every concern I've had has been addressed. This is the future of desktop installers.
 [- RandomEngy (Discord)](https://discord.com/channels/767856501477343282/947444323765583913/1200897478036299861)
+
+I'm extremely impressed with Velopack's performance in creating releases, as well as checking for and applying updates. It is significantly faster than other tools. The vpk CLI is intuitive and easy to implement, even with my complex build pipeline. Thanks to Velopack, I've been able to streamline my workflow and save valuable time. It's a fantastic tool that I highly recommend!
+[- khdc (Discord)](https://discord.com/channels/767856501477343282/947444323765583913/1216460920696344576)

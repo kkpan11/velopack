@@ -1,6 +1,8 @@
-﻿using Divergic.Logging.Xunit;
+﻿using Neovolve.Logging.Xunit;
+using Velopack.Core;
 using Velopack.Packaging.Exceptions;
 using Velopack.Packaging.Windows;
+using Velopack.Util;
 using Velopack.Vpk;
 using Velopack.Vpk.Logging;
 
@@ -35,7 +37,7 @@ public class CompatUtilTests
     {
         Skip.IfNot(VelopackRuntimeInfo.IsWindows);
         using var logger = GetCompat(out var compat);
-        using var _1 = Utility.GetTempDirectory(out var dir);
+        using var _1 = TempUtil.GetTempDirectory(out var dir);
         var sample = PathHelper.GetAvaloniaSample();
         Exe.InvokeAndThrowIfNonZero(
             "dotnet",
@@ -43,10 +45,10 @@ public class CompatUtilTests
                 "-p:UseLocalVelopack=true", "-p:PublishSingleFile=true" },
             sample);
 
-        var path = Path.Combine(dir, "AvaloniaCrossPlat.exe");
+        var path = Path.Combine(dir, "VelopackCSharpAvalonia.exe");
         Assert.Equal(VelopackRuntimeInfo.VelopackProductVersion, compat.Verify(path));
 
-        var newPath = Path.Combine(dir, "AvaloniaCrossPlat-asd2.exe");
+        var newPath = Path.Combine(dir, "VelopackCSharpAvalonia-asd2.exe");
         File.Move(path, newPath);
         Assert.Equal(VelopackRuntimeInfo.VelopackProductVersion, compat.Verify(newPath));
     }
@@ -56,7 +58,7 @@ public class CompatUtilTests
     {
         Skip.IfNot(VelopackRuntimeInfo.IsWindows);
         using var logger = GetCompat(out var compat);
-        using var _1 = Utility.GetTempDirectory(out var dir);
+        using var _1 = TempUtil.GetTempDirectory(out var dir);
         var sample = PathHelper.GetAvaloniaSample();
         Exe.InvokeAndThrowIfNonZero(
             "dotnet",
@@ -64,10 +66,10 @@ public class CompatUtilTests
                 "-p:UseLocalVelopack=true" },
             sample);
 
-        var path = Path.Combine(dir, "AvaloniaCrossPlat.exe");
+        var path = Path.Combine(dir, "VelopackCSharpAvalonia.exe");
         Assert.Equal(VelopackRuntimeInfo.VelopackProductVersion, compat.Verify(path));
 
-        var newPath = Path.Combine(dir, "AvaloniaCrossPlat-asd2.exe");
+        var newPath = Path.Combine(dir, "VelopackCSharpAvalonia-asd2.exe");
         File.Move(path, newPath);
         Assert.Equal(VelopackRuntimeInfo.VelopackProductVersion, compat.Verify(newPath));
     }
@@ -77,17 +79,22 @@ public class CompatUtilTests
     {
         Skip.IfNot(VelopackRuntimeInfo.IsWindows);
         using var logger = GetCompat(out var compat);
-        using var _1 = Utility.GetTempDirectory(out var dir);
+        using var _1 = TempUtil.GetTempDirectory(out var dir);
         var sample = PathHelper.GetWpfSample();
-        Exe.InvokeAndThrowIfNonZero(
+        string stdOut = Exe.InvokeAndThrowIfNonZero(
             "dotnet",
             new string[] { "publish", "-o", dir },
             sample);
 
-        var path = Path.Combine(dir, "VeloWpfSample.exe");
+        var path = Path.Combine(dir, "VelopackCSharpWpf.exe");
         Assert.NotNull(compat.Verify(path));
-
-        var newPath = Path.Combine(dir, "VeloWpfSample-asd2.exe");
+        //We do not expect to see the warning about VelopackApp.Run() not being at the start of the main method
+        Assert.DoesNotContain(logger.Entries, logEntry =>
+            logEntry.LogLevel == LogLevel.Warning &&
+            logEntry.Message.Contains("VelopackApp.Run()")
+        );
+        
+        var newPath = Path.Combine(dir, "VelopackCSharpWpf-asd2.exe");
         File.Move(path, newPath);
         Assert.NotNull(compat.Verify(newPath));
     }
@@ -97,7 +104,7 @@ public class CompatUtilTests
     {
         Skip.IfNot(VelopackRuntimeInfo.IsWindows);
         using var logger = GetCompat(out var compat);
-        using var _1 = Utility.GetTempDirectory(out var dir);
+        using var _1 = TempUtil.GetTempDirectory(out var dir);
         var sample = PathHelper.GetTestRootPath("TestApp");
         Exe.InvokeAndThrowIfNonZero(
             "dotnet",
@@ -114,7 +121,7 @@ public class CompatUtilTests
     {
         Skip.IfNot(VelopackRuntimeInfo.IsWindows);
         using var logger = GetCompat(out var compat);
-        using var _1 = Utility.GetTempDirectory(out var dir);
+        using var _1 = TempUtil.GetTempDirectory(out var dir);
         var sample = PathHelper.GetTestRootPath("TestApp");
         Exe.InvokeAndThrowIfNonZero(
             "dotnet",
@@ -125,7 +132,7 @@ public class CompatUtilTests
         var path = Path.Combine(dir, "TestApp.exe");
         Assert.NotNull(compat.Verify(path));
 
-        var newPath = Path.Combine(dir, "VeloWpfSample-asd2.exe");
+        var newPath = Path.Combine(dir, "CSharpWpf-asd2.exe");
         File.Move(path, newPath);
         Assert.NotNull(compat.Verify(newPath));
     }

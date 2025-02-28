@@ -2,10 +2,22 @@
 target/
 _docyml/
 
+target
+**/node_modules
+**/.DS_Store
+npm-debug.log*
+lib
+cargo.log
+cross.log
+*.tgz
+*.node
+out/
+
 #################
 ## Eclipse
 #################
 
+.vscode
 .idea
 *.pydevproject
 .project
